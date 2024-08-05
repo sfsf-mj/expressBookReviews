@@ -11,7 +11,18 @@ app.use(express.json());
 app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
 app.use("/customer/auth/*", function auth(req,res,next){
+    
 //Write the authenication mechanism here
+if (req.session && req.session.accessToken) {
+    if (isValidAccessToken(req.session.accessToken)) {
+      next(); 
+    } else {
+      res.status(401).send('Unauthorized: Invalid access token');
+    }
+  } else {
+    res.status(401).send('Unauthorized: No access token provided');
+  }
+
 });
  
 const PORT =5000;
